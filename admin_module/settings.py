@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'apps.user',
+    'apps.issues',
     #for rest framework 
     'rest_framework',
     'rest_framework_api_key',

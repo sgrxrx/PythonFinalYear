@@ -10,7 +10,7 @@ from .manager import CustomUserManager
 
 
 class User(AbstractBaseUser, PermissionsMixin):
-    name = models.CharField(max_length=100, null=False)
+    name = models.CharField(max_length=100, null=True)
     email = models.CharField(max_length=55, unique=True, null=False)
     password = models.CharField(max_length=255, null=False)
     phone = models.CharField(max_length=20, blank=True, null=True)

@@ -5,8 +5,11 @@ WORKDIR /usr/src/app
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
+# RUN apk update \
+#     && apk add --no-cache gcc python3-dev musl-dev mariadb-connector-c-dev netcat-openbsd
+
 RUN apk update \
-    && apk add --no-cache gcc python3-dev musl-dev mariadb-connector-c-dev netcat-openbsd
+    && apk add --no-cache gcc python3-dev musl-dev netcat-openbsd
 
 RUN pip install --upgrade pip
 COPY ./requirements.txt .

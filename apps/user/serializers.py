@@ -1,5 +1,5 @@
 from rest_framework import serializers
-
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from apps.user.models import User
 
 from .models import User
@@ -22,6 +22,12 @@ class UserLoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField(write_only=True)
 
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    def validate(self, attrs):
+        data = super().validate(attrs)
+        data['is_staff'] = self.user.is_staff
+        # Add more user fields if needed
+        return data
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:

@@ -188,6 +188,10 @@ AUTHENTICATION_BACKENDS = [
     'axes.backends.AxesStandaloneBackend',  # Default Django auth
 ]
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://pythonfinalyear.onrender.com",
+]
+
 # Add these security settings
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True

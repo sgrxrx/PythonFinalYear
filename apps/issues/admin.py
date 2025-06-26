@@ -5,7 +5,6 @@ from .models import Issue
 class IssueAdmin(admin.ModelAdmin):
     list_display = (
         'id',
-        'title',
         'issue_type',
         'status',
         'reported_by',

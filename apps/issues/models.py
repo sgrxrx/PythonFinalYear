@@ -16,7 +16,6 @@ class Issue(models.Model):
         ('closed', 'Closed'),
     ]
 
-    title = models.CharField(max_length=255)
     description = models.TextField()
     issue_type = models.CharField(max_length=50, choices=ISSUE_TYPE_CHOICES)
     latitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)

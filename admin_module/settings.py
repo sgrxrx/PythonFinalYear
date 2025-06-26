@@ -53,7 +53,6 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'rest_framework_simplejwt',
     'drf_yasg',
-    'axes',
 ]   
 
 MIDDLEWARE = [
@@ -64,7 +63,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'axes.middleware.AxesMiddleware',
 ]
 REST_FRAMEWORK = {
     
@@ -175,17 +173,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # For login (user login for security such as )
 # log suspicious login activity and limit brute-force login attempts 
 
-AXES_FAILURE_LIMIT = 5  # Max failed attempts
-AXES_COOLOFF_TIME = 1  # Lockout period (in hours)
-AXES_LOCKOUT_TEMPLATE = 'user_login/lockout.html'  # Optional custom template
-  # Lock per username
-AXES_USERNAME_FORM_FIELD = 'email'  # Since you're logging in using email
 
 
 AUTHENTICATION_BACKENDS = [
-     # Axes handles brute-force protection
     'django.contrib.auth.backends.ModelBackend',
-    'axes.backends.AxesStandaloneBackend',  # Default Django auth
 ]
 
 CSRF_TRUSTED_ORIGINS = [
@@ -198,15 +189,6 @@ SECURE_CONTENT_TYPE_NOSNIFF = True
 X_FRAME_OPTIONS = 'DENY'
 CSRF_COOKIE_SECURE = False  # If using HTTPS
 SESSION_COOKIE_SECURE = False  # If using HTTPS
-
-# For too many login attempts
-AXES_LOCKOUT_TEMPLATE = 'user_login/account_locked.html'
-
-
-# FERNET_KEY = config('FERNET_KEY')
-# FERNET_KEYS = [FERNET_KEY]
-# FERNET_INSTANCES = [Fernet(key.encode()) for key in FERNET_KEYS]
-
 
 REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': [

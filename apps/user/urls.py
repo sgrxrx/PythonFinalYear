@@ -10,8 +10,7 @@ app_name = 'user_login'
 router = DefaultRouter()
 router.register('register', UserRegistrationView, basename='user-register')
 router.register('', UserViewSet, basename='user')
-urlpatterns = router.urls + [
+urlpatterns =[
     path('login/', CustomTokenObtainPairView.as_view(), name='user-login'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-
-]
+] + router.urls

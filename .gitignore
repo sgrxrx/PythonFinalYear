@@ -16,4 +16,5 @@ db.sqlite3
 .env
 
 ML/dataset/
+
 media/

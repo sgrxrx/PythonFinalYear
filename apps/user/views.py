@@ -9,6 +9,7 @@ from .serializers import UserRegistrationSerializer, CustomTokenObtainPairSerial
 class UserRegistrationView(ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserRegistrationSerializer
+    permission_classes = [AllowAny]  # Allow any user to register
 
     def get_queryset(self):
         return User.objects.none() 

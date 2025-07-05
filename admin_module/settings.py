@@ -67,19 +67,20 @@ MIDDLEWARE = [
 REST_FRAMEWORK = {
     
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-        # 'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.TokenAuthentication',
-        
     ),
     
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
     ],
-    
-   
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend',
+        'rest_framework.filters.OrderingFilter',  
+        'rest_framework.filters.SearchFilter', 
+   ],
 }
 
 ROOT_URLCONF = 'admin_module.urls'
@@ -189,23 +190,3 @@ SECURE_CONTENT_TYPE_NOSNIFF = True
 X_FRAME_OPTIONS = 'DENY'
 CSRF_COOKIE_SECURE = False  # If using HTTPS
 SESSION_COOKIE_SECURE = False  # If using HTTPS
-
-REST_FRAMEWORK = {
-    'DEFAULT_FILTER_BACKENDS': [
-        'django_filters.rest_framework.DjangoFilterBackend',
-        'rest_framework.filters.OrderingFilter',  
-        'rest_framework.filters.SearchFilter', 
-        ],
-   
-}
-# Permissions:
-# - AllowAny: No restrictions
-# - IsAuthenticated: Only authenticated users can access
-# - IsAdminUser: Only admin users can access
-# - IsAuthenticatedOrReadOnly: Authenticated users can modify, others can only read
-
-
-REST_FRAMEWORK = {
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 10
-}

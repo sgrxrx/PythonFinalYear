@@ -9,6 +9,7 @@ services:
     volumes:
       - .:/usr/src/app
       - ./db.sqlite3:/usr/src/app/db.sqlite3 
+      - ./ML/train_issue_classifier.keras:/usr/src/app/ML/train_issue_classifier.keras
       - static_volume:/usr/src/app/staticfiles
     expose:
       - 8000

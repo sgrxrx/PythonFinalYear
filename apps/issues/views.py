@@ -5,6 +5,7 @@ from rest_framework.response import Response
 
 from .models import Issue, Authority
 from .serializers import IssueSerializer
+from apps.issues.ml_utils import predict_issue_type
 
 
 DEPARTMENT_EMAILS = {

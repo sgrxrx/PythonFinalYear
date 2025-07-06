@@ -11,10 +11,12 @@ class Issue(models.Model):
     ]    
 
     STATUS_CHOICES = [
-        ('open', 'Open'),
+        ('pending', 'Pending'),
         ('in_progress', 'In Progress'),
-        ('closed', 'Closed'),
+        ('resolved', 'Resolved'),
+        ('rejected', 'Rejected'),
     ]
+
 
     description = models.TextField()
     issue_type = models.CharField(max_length=50, choices=ISSUE_TYPE_CHOICES)

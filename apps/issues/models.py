@@ -17,7 +17,7 @@ class Issue(models.Model):
         ('Rejected', 'Rejected'),
     ]
 
-
+    title = models.CharField(max_length=255, null=True, blank=True)
     description = models.TextField()
     issue_type = models.CharField(max_length=50, choices=ISSUE_TYPE_CHOICES)
     latitude = models.DecimalField(max_digits=20, decimal_places=15, null=True, blank=True)

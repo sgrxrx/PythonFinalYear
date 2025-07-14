@@ -1,15 +1,13 @@
-FROM python:3.9.6-alpine
+FROM python:3.9-slim
 
 WORKDIR /usr/src/app
 
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-# RUN apk update \
-#     && apk add --no-cache gcc python3-dev musl-dev mariadb-connector-c-dev netcat-openbsd
-
-RUN apk update \
-    && apk add --no-cache gcc python3-dev musl-dev netcat-openbsd
+RUN apt-get update \
+    && apt-get install -y gcc python3-dev build-essential netcat-openbsd \
+    && rm -rf /var/lib/apt/lists/*
 
 RUN pip install --upgrade pip
 COPY ./requirements.txt .

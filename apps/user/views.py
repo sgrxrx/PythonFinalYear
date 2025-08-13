@@ -9,17 +9,18 @@ from .serializers import UserRegistrationSerializer, CustomTokenObtainPairSerial
 class UserRegistrationView(ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserRegistrationSerializer
-    permission_classes = [AllowAny]  # Allow any user to register
+    permission_classes = [AllowAny] 
 
     def get_queryset(self):
         return User.objects.none() 
     
 class UserViewSet(ModelViewSet):
     queryset = User.objects.all()
-    serializer_class = UserRegistrationSerializer  # Or UserSerializer
+    serializer_class = UserRegistrationSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
+        print("User ID:", self.request.user.id)
         return User.objects.filter(id=self.request.user.id)
 
     

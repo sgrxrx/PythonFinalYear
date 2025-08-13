@@ -5,6 +5,7 @@ from rest_framework.response import Response
 
 from .models import Issue, Authority
 from .serializers import IssueSerializer
+from apps.issues.ml_utils import predict_issue_type
 
 
 DEPARTMENT_EMAILS = {
@@ -51,42 +52,7 @@ class IssueViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         instance = serializer.save(reported_by=self.request.user)
-        authority = Authority.objects.filter(issue_type=instance.issue_type).first()
-        if authority:
-            instance.assigned_to = authority.user
+        if instance.image:
+            predicted_type = predict_issue_type(instance.image.path)
+            instance.issue_type = predicted_type
             instance.save()
-        
-       
-    def update(self, request, *args, **kwargs):
-        partial = kwargs.pop('partial', False)
-        instance = self.get_object()
-        old_status = instance.status
-        serializer = self.get_serializer(instance, data=request.data, partial=partial)
-        serializer.is_valid(raise_exception=True)
-        updated_instance = serializer.save()
-
-        # Check if status changed to "Accepted" (or "Approved" if you rename)
-        if old_status != updated_instance.status and updated_instance.status.lower() == "accepted":
-            department_email = DEPARTMENT_EMAILS.get(updated_instance.issue_type)
-            if department_email:
-                maps_link = f"https://www.google.com/maps/search/?api=1&query={updated_instance.latitude},{updated_instance.longitude}"
-                message = (
-                    f"Issue '{updated_instance.title}' has been approved!\n"
-                    f"Issue Description: {updated_instance.description}\n"
-                    f"Map: {maps_link}"
-                )
-                email = EmailMessage(
-                    subject=f"Issue Approved: {updated_instance.get_issue_type_display()}",
-                    body=message,
-                    from_email=None,
-                    to=[department_email],
-                )
-                if updated_instance.image:
-                    email.attach_file(updated_instance.image.path)
-                email.send(fail_silently=False)
-                updated_instance.status = "Assigned to Authority"
-                updated_instance.save(update_fields=["status"])
-                
-
-        serializer = self.get_serializer(updated_instance)
-        return Response(serializer.data)

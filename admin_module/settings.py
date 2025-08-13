@@ -13,9 +13,6 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from pathlib import Path
 import os
 
-
-
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 MEDIA_URL = '/media/'
@@ -191,6 +188,7 @@ X_FRAME_OPTIONS = 'DENY'
 CSRF_COOKIE_SECURE = False  # If using HTTPS
 SESSION_COOKIE_SECURE = False  # If using HTTPS
 
+<<<<<<< HEAD
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
@@ -198,3 +196,18 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'programmingthing1011@gmail.com'
 EMAIL_HOST_PASSWORD = 'xfzr errj ktjy dszk'
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+=======
+REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend',
+        'rest_framework.filters.OrderingFilter',  
+        'rest_framework.filters.SearchFilter', 
+        ],
+   
+}
+
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10
+}
+>>>>>>> 33394ae (CNN)

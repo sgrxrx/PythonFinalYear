@@ -3,10 +3,11 @@ from django.contrib.auth import get_user_model
 
 class Issue(models.Model):
     ISSUE_TYPE_CHOICES = [
-        ('potholes', 'Potholes'),
-        ('street_light', 'Street Light'),
-        ('water_leakage', 'Water Leakage'),
-        ('garbage', 'Garbage'),
+        ('Potholes', 'Potholes'),
+        ('Street Light', 'Street Light'),
+        ('Water Leakage', 'Water Leakage'),
+        ('Garbage', 'Garbage'),
+        ('Not Labelled', 'Not Labelled'),
     ]    
 
     STATUS_CHOICES = [
@@ -32,7 +33,7 @@ class Issue(models.Model):
     latitude = models.DecimalField(max_digits=20, decimal_places=15, null=True, blank=True)
     longitude = models.DecimalField(max_digits=20, decimal_places=15, null=True, blank=True)
     image = models.ImageField(upload_to='issues/', null=True, blank=True)
-    status = models.CharField(max_length=50, choices=STATUS_CHOICES, default='open')
+    status = models.CharField(max_length=50, choices=STATUS_CHOICES, default='Pending')
     priority = models.CharField(max_length=50, choices=PRIORITY_CHOICES, default='Low')
     assigned_to = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL, null=True, blank=True, related_name='assigned_issues')
     authority_comment = models.TextField(null=True, blank=True)

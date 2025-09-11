@@ -19,24 +19,12 @@ class IssueViewSet(viewsets.ModelViewSet):
     queryset = Issue.objects.all()
     serializer_class = IssueSerializer
 
-    # def get_queryset(self):
-    #     queryset = Issue.objects.all()
-    #     status = self.request.query_params.get('status')
-    #     user_specific = self.request.query_params.get('user_specific')
-
-    #     if status:
-    #         queryset = queryset.filter(status=status)
-    #     if user_specific == 'true':
-    #         queryset = queryset.filter(reported_by=self.request.user)
-    #     return queryset
     def get_queryset(self):
         queryset = Issue.objects.all()
         status = self.request.query_params.get('status')
         user_specific = self.request.query_params.get('user_specific')
-
         if status:
             queryset = queryset.filter(status=status)
-
         if user_specific == 'true':
             # Check if current user is an authority
             authority = Authority.objects.filter(user=self.request.user).first()
@@ -45,6 +33,13 @@ class IssueViewSet(viewsets.ModelViewSet):
                 queryset = queryset.filter(issue_type=authority.issue_type)
             else:
                 # User is not an authority, return issues reported by them
+                queryset = queryset.filter(reported_by=self.request.user)
+        elif not status and not user_specific:
+            # If neither param is provided, check if user is authority
+            authority = Authority.objects.filter(user=self.request.user).first()
+            if authority and authority.issue_type:
+                queryset = queryset.filter(issue_type=authority.issue_type)
+            else:
                 queryset = queryset.filter(reported_by=self.request.user)
 
         return queryset

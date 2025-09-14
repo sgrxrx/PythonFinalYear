@@ -20,6 +20,35 @@ class IssueViewSet(viewsets.ModelViewSet):
     serializer_class = IssueSerializer
 
     def get_queryset(self):
+        # queryset = Issue.objects.all()
+        # status = self.request.query_params.get('status')
+        # user_specific = self.request.query_params.get('user_specific')
+
+        # # If user is staff, return all issues (optionally filter by status)
+        # if self.request.user.is_staff:
+        #     if status:
+        #         return queryset.filter(status=status)
+        #     return queryset
+
+        # # If user is authority, return only issues assigned to their type and status 'Assigned to Authority'
+        # authority = Authority.objects.filter(user=self.request.user).first()
+        # if authority and authority.issue_type:
+        #     return queryset.filter(issue_type=authority.issue_type, status='Assigned to Authority')
+
+        # if status:
+        #     queryset = queryset.filter(status=status)
+        # if user_specific == 'true':
+        #     if authority and authority.issue_type:
+        #         queryset = queryset.filter(issue_type=authority.issue_type, status='Assigned to Authority')
+        #     else:
+        #         queryset = queryset.filter(reported_by=self.request.user)
+        # elif not status and not user_specific:
+        #     if authority and authority.issue_type:
+        #         queryset = queryset.filter(issue_type=authority.issue_type, status='Assigned to Authority')
+        #     else:
+        #         queryset = queryset.filter(reported_by=self.request.user)
+
+        # return queryset
         queryset = Issue.objects.all()
         status = self.request.query_params.get('status')
         user_specific = self.request.query_params.get('user_specific')
@@ -30,24 +59,27 @@ class IssueViewSet(viewsets.ModelViewSet):
                 return queryset.filter(status=status)
             return queryset
 
-        # If user is authority, return only issues assigned to their type and status 'Assigned to Authority'
         authority = Authority.objects.filter(user=self.request.user).first()
-        if authority and authority.issue_type:
-            return queryset.filter(issue_type=authority.issue_type, status='Assigned to Authority')
 
-        if status:
-            queryset = queryset.filter(status=status)
-        if user_specific == 'true':
+        # Only filter for authority/status on list view
+        if self.action == 'list':
             if authority and authority.issue_type:
-                queryset = queryset.filter(issue_type=authority.issue_type, status='Assigned to Authority')
-            else:
-                queryset = queryset.filter(reported_by=self.request.user)
-        elif not status and not user_specific:
-            if authority and authority.issue_type:
-                queryset = queryset.filter(issue_type=authority.issue_type, status='Assigned to Authority')
-            else:
-                queryset = queryset.filter(reported_by=self.request.user)
+                return queryset.filter(issue_type=authority.issue_type, status='Assigned to Authority')
+            if status:
+                queryset = queryset.filter(status=status)
+            if user_specific == 'true':
+                if authority and authority.issue_type:
+                    queryset = queryset.filter(issue_type=authority.issue_type, status='Assigned to Authority')
+                else:
+                    queryset = queryset.filter(reported_by=self.request.user)
+            elif not status and not user_specific:
+                if authority and authority.issue_type:
+                    queryset = queryset.filter(issue_type=authority.issue_type, status='Assigned to Authority')
+                else:
+                    queryset = queryset.filter(reported_by=self.request.user)
+            return queryset
 
+        # For detail views, allow access to all issues (or add your own permission logic)
         return queryset
 
 

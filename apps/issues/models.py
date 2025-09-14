@@ -37,6 +37,7 @@ class Issue(models.Model):
     priority = models.CharField(max_length=50, choices=PRIORITY_CHOICES, default='Low')
     assigned_to = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL, null=True, blank=True, related_name='assigned_issues')
     authority_comment = models.TextField(null=True, blank=True)
+    image_after_fix = models.ImageField(upload_to='issues/fixed/', null=True, blank=True)
     reported_by = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='reported_issues')
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -46,6 +47,3 @@ class Issue(models.Model):
 class Authority(models.Model):
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='authority_profile')
     issue_type = models.CharField(max_length=50, choices=Issue.ISSUE_TYPE_CHOICES, blank=True, null=True)
-
-    # def __str__(self):
-    #     return self.user

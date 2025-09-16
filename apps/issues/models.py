@@ -42,7 +42,7 @@ class Issue(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.issue_type
+        return self.title if self.title else f"Issue {self.id}"
     
 class Authority(models.Model):
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='authority_profile')

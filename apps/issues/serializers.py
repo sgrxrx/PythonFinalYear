@@ -5,10 +5,10 @@ from rest_framework import serializers
 from .models import Issue
 
 DEPARTMENT_EMAILS = {
-    'potholes': 'sauravrijal1011@gmail.com',
-    'street_light': 'sunilstha68@gmail.com',
-    'water_leakage': 'sunilstha68@gmail.com',
-    'garbage': 'sunilstha68@gmail.com',
+    'Potholes': 'sauravrijal1011@gmail.com',
+    'Street Light': 'sunilstha68@gmail.com',
+    'Water Leakage': 'sunilstha68@gmail.com',
+    'Garbage': 'sunilstha68@gmail.com',
 }
 
 class IssueSerializer(serializers.ModelSerializer):

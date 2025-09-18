@@ -2,6 +2,8 @@ import os
 import random
 import tensorflow as tf
 from tensorflow.keras import layers, models
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, average_precision_score
+import numpy as np
 
 DATASET_DIR = 'dataset'
 IMAGES_PER_CLASS = 1000
@@ -72,5 +74,45 @@ model.compile(optimizer='adam',
               loss='sparse_categorical_crossentropy',
               metrics=['accuracy'])
 
-model.fit(ds, epochs=70)
+
+# Split dataset into train and test for evaluation
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, average_precision_score
+import numpy as np
+
+split_idx = int(0.8 * len(filepaths))
+train_files, test_files = filepaths[:split_idx], filepaths[split_idx:]
+train_labels, test_labels = labels[:split_idx], labels[split_idx:]
+
+train_ds = tf.data.Dataset.from_tensor_slices((list(train_files), list(train_labels)))
+train_ds = train_ds.map(process_path, num_parallel_calls=tf.data.AUTOTUNE)
+train_ds = train_ds.filter(lambda img, label: tf.reduce_sum(img) > 0)
+train_ds = train_ds.batch(32).prefetch(tf.data.AUTOTUNE)
+
+test_ds = tf.data.Dataset.from_tensor_slices((list(test_files), list(test_labels)))
+test_ds = test_ds.map(process_path, num_parallel_calls=tf.data.AUTOTUNE)
+test_ds = test_ds.filter(lambda img, label: tf.reduce_sum(img) > 0)
+test_ds = test_ds.batch(32).prefetch(tf.data.AUTOTUNE)
+
+model.fit(train_ds, epochs=70)
 model.save('issue_classifier.keras')
+
+# Evaluation
+y_true = []
+y_pred = []
+y_score = []
+for images, labels in test_ds:
+    preds = model.predict(images)
+    y_true.extend(labels.numpy())
+    y_pred.extend(np.argmax(preds, axis=1))
+    y_score.extend(preds)
+
+print("Accuracy:", accuracy_score(y_true, y_pred))
+print("Precision:", precision_score(y_true, y_pred, average='weighted', zero_division=0))
+print("Recall:", recall_score(y_true, y_pred, average='weighted', zero_division=0))
+print("F1 Score:", f1_score(y_true, y_pred, average='weighted', zero_division=0))
+try:
+    print("MAP:", average_precision_score(
+        tf.keras.utils.to_categorical(y_true, num_classes=len(class_names)),
+        np.array(y_score), average='macro'))
+except Exception as e:
+    print("MAP calculation error:", e)

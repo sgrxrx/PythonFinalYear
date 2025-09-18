@@ -1,3 +1,13 @@
+ML_TO_DJANGO_ISSUE_TYPE = {
+    "garbage": "Garbage",
+    "potholes": "Potholes",
+    "street_light": "Street Light",
+    "water_leakage": "Water Leakage",
+    "not_labelled": "Not Labelled"
+}
+
+def map_ml_label_to_django(label):
+    return ML_TO_DJANGO_ISSUE_TYPE.get(label, "Not Labelled")
 import tensorflow as tf
 from PIL import Image
 import numpy as np

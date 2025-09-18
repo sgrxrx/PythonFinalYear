@@ -7,14 +7,6 @@ from .models import Issue, Authority
 from .serializers import IssueSerializer
 from apps.issues.ml_utils import predict_issue_type
 
-
-DEPARTMENT_EMAILS = {
-    'potholes': 'sauravrijal1011@gmail.com',
-    'street_light': 'sunilstha68@gmail.com',
-    'water_leakage': 'sunilstha68@gmail.com',
-    'garbage': 'sunilstha68@gmail.com',
-}
-
 class IssueViewSet(viewsets.ModelViewSet):
     queryset = Issue.objects.all()
     serializer_class = IssueSerializer
@@ -55,14 +47,14 @@ class IssueViewSet(viewsets.ModelViewSet):
 
 
     def perform_create(self, serializer):
+        from apps.issues.ml_utils import map_ml_label_to_django
         instance = serializer.save(reported_by=self.request.user)
-        # print("Issue created with ID:", instance.image)
         if instance.image and hasattr(instance.image, 'path'):
             print("Image path:", instance.image.path)
-        else:
-            print("No image uploaded.")
-        if instance.image:
             predicted_type = predict_issue_type(instance.image.path)
             print(f"Predicted issue type: {predicted_type}")
-            instance.issue_type = predicted_type
-            instance.save()
+            instance.issue_type = map_ml_label_to_django(predicted_type)
+        else:
+            print("No image uploaded.")
+            instance.issue_type = "Not Labelled"
+        instance.save()

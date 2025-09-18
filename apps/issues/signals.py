@@ -16,10 +16,12 @@ def send_issue_status_email(sender, instance, created, **kwargs):
     from apps.issues.models import Issue
     if sender is not Issue:
         return
+    print("Signal triggered for Issue:", instance.pk)
     if not created:
         if instance.status == 'Accepted':
             from django.core.mail import EmailMessage
             department_email = DEPARTMENT_EMAILS.get(instance.issue_type)
+            print(f"Department email for {instance.issue_type}: {department_email}")
             if department_email:
                 maps_link = f"https://www.google.com/maps/search/?api=1&query={instance.latitude},{instance.longitude}"
                 message = (

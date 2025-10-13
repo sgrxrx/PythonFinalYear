@@ -5,6 +5,9 @@ from tensorflow.keras import layers, models
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, average_precision_score
 import numpy as np
 
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, average_precision_score
+import numpy as np
+
 DATASET_DIR = 'dataset'
 IMAGES_PER_CLASS = 1000
 IMG_SIZE = (128, 128)
@@ -64,6 +67,9 @@ model = models.Sequential([
     layers.Conv2D(64, (3, 3), activation='relu'),
     layers.BatchNormalization(),
     layers.MaxPooling2D((2, 2)),
+    layers.Conv2D(128, (3, 3), activation='relu'),
+    layers.BatchNormalization(),
+    layers.MaxPooling2D((2, 2)),
     layers.Flatten(),
     layers.Dense(64, activation='relu'),
     layers.Dropout(0.5),
@@ -74,11 +80,6 @@ model.compile(optimizer='adam',
               loss='sparse_categorical_crossentropy',
               metrics=['accuracy'])
 
-
-# Split dataset into train and test for evaluation
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, average_precision_score
-import numpy as np
-
 split_idx = int(0.8 * len(filepaths))
 train_files, test_files = filepaths[:split_idx], filepaths[split_idx:]
 train_labels, test_labels = labels[:split_idx], labels[split_idx:]
@@ -86,6 +87,28 @@ train_labels, test_labels = labels[:split_idx], labels[split_idx:]
 train_ds = tf.data.Dataset.from_tensor_slices((list(train_files), list(train_labels)))
 train_ds = train_ds.map(process_path, num_parallel_calls=tf.data.AUTOTUNE)
 train_ds = train_ds.filter(lambda img, label: tf.reduce_sum(img) > 0)
+
+# Data augmentation for training
+def augment(image, label):
+    # Random horizontal flip
+    image = tf.image.random_flip_left_right(image)
+    # Random vertical flip (optional, remove if not appropriate)
+    image = tf.image.random_flip_up_down(image)
+    # Random brightness/contrast/saturation/hue
+    image = tf.image.random_brightness(image, max_delta=0.08)
+    image = tf.image.random_contrast(image, lower=0.9, upper=1.1)
+    image = tf.image.random_saturation(image, lower=0.95, upper=1.05)
+    image = tf.image.random_hue(image, max_delta=0.02)
+    # Slight random zoom: resize to slightly larger and random crop back
+    scale = tf.random.uniform([], 1.0, 1.15)
+    new_size = tf.cast(tf.cast(tf.shape(image)[:2], tf.float32) * scale, tf.int32)
+    image = tf.image.resize(image, new_size)
+    image = tf.image.random_crop(image, size=[*IMG_SIZE, 3])
+    # Ensure pixel range still [0,1]
+    image = tf.clip_by_value(image, 0.0, 1.0)
+    return image, label
+
+train_ds = train_ds.map(augment, num_parallel_calls=tf.data.AUTOTUNE)
 train_ds = train_ds.batch(32).prefetch(tf.data.AUTOTUNE)
 
 test_ds = tf.data.Dataset.from_tensor_slices((list(test_files), list(test_labels)))

@@ -51,15 +51,6 @@ ds = ds.map(process_path, num_parallel_calls=tf.data.AUTOTUNE)
 ds = ds.filter(lambda img, label: tf.reduce_sum(img) > 0)
 ds = ds.batch(32).prefetch(tf.data.AUTOTUNE)
 
-# model = models.Sequential([
-#     layers.Conv2D(32, (3, 3), activation='relu', input_shape=(128, 128, 3)),
-#     layers.MaxPooling2D((2, 2)),
-#     layers.Conv2D(64, (3, 3), activation='relu'),
-#     layers.MaxPooling2D((2, 2)),
-#     layers.Flatten(),
-#     layers.Dense(64, activation='relu'),
-#     layers.Dense(len(class_names), activation='softmax')
-# ])
 model = models.Sequential([
     layers.Conv2D(32, (3, 3), activation='relu', input_shape=(128, 128, 3)),
     layers.BatchNormalization(),

@@ -27,8 +27,3 @@ A Django-based web application built to simplify and manage your travel experien
 4. Run `pip install -r requirements.txt`
 5. Apply migrations using `python manage.py migrate`
 6. Start the dev server: `python manage.py runserver`
-<<<<<<< HEAD
-
-
-=======
->>>>>>> b6668f870089f33ca2db4c2272555f5f16ebd573

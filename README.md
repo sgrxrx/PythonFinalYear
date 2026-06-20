@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-=======
-# Travel
->>>>>>> b6668f870089f33ca2db4c2272555f5f16ebd573
 # 🌍 Travel Management System
 
 **"Where journeys begin with just one click!"**  
